@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$KETA - Ketamusk Trip</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body, html {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1a0033 0%, #000 90%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e0e0ff;
+      user-select: none;
+      position: relative;
+    }
+    canvas.stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    h1 {
+      position: fixed;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: #ff55cc;
+      text-shadow: 0 0 15px #ff55cc88;
+      z-index: 50;
+      pointer-events: none;
+    }
+    #elon {
+      position: absolute;
+      width: 150px;
+      user-select: none;
+      filter: drop-shadow(0 0 20px #ff55ccaa);
+      will-change: transform;
+      z-index: 40;
+      pointer-events: none;
+    }
+    .khole-circle {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #000;
+      box-shadow: 0 0 15px #ff00ffcc inset, 0 0 20px #ff33ffcc;
+      color: #ff33ff;
+      font-weight: 900;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      pointer-events: none;
+      letter-spacing: 0.15em;
+      text-align: center;
+      line-height: 1.2;
+      font-family: monospace;
+      z-index: 30;
+      white-space: pre-line;
+    }
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #sections {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      max-width: 480px;
+      background: rgba(30,10,60,0.85);
+      border-radius: 30px;
+      box-shadow: 0 0 25px #ff44ccaa, inset 0 0 12px #ff44ccbb;
+      padding: 20px 30px;
+      color: #e0e0ff;
+      font-weight: 600;
+      user-select: none;
+      z-index: 60;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 12px 0;
+      border-bottom: 1px solid #ff55cc44;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ff55cc;
+      letter-spacing: 0.1em;
+    }
+    .section-content {
+      max-height: 0;
+      overflow: hidden;
+      color: #d0aaff;
+      font-size: 1rem;
+      line-height: 1.4;
+      padding: 0;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      user-select: text;
+    }
+    .section-content.open {
+      padding: 10px 0 15px;
+      max-height: 400px;
+    }
+    .section-content a {
+      color: #ff88ff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="stars"></canvas>
+  <h1>$KETA: Elon’s Jetpack K-Hole</h1>
+  <div id="container">
+    <img id="elon" src="https://i.imgur.com/ImUECHy.png" alt="Flying Elon" draggable="false" />
+  </div>
+  <div id="sections">
+    <div class="section">
+      <div class="section-title">Follow The Twitter 🡳</div>
+      <div class="section-content">
+        <a href="https://x.com/ketamuskcoin" target="_blank">https://x.com/ketamuskcoin</a>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Plans With The Project 🡳</div>
+      <div class="section-content">
+        Launch NFT collection, create a psychedelic side-scrolling flight game, top 10 scores win prizes, influencer collabs, merch store soon.
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Game Coming Soon 🡳</div>
+      <div class="section-content">
+        Epic $KETA game dropping soon. Stay tuned on Twitter!
+      </div>
+    </div>
+  </div>
+  <script>
+    const elon = document.getElementById('elon');
+    let x = 200, y = 150, vx = 2, vy = 1.5;
+    const size = 150, kholes = [];
+    const kholeCount = 7;
+
+    function spawnKholes() {
+      const container = document.getElementById('container');
+      container.querySelectorAll('.khole-circle').forEach(e => e.remove());
+      for (let i = 0; i < kholeCount; i++) {
+        const k = document.createElement('div');
+        k.className = 'khole-circle';
+        k.textContent = 'K\nHOLE';
+        k.style.top = Math.random() * (window.innerHeight - 110) + 'px';
+        k.style.left = Math.random() * (window.innerWidth - 110) + 'px';
+        container.appendChild(k);
+        kholes.push(k);
+      }
+    }
+
+    function move() {
+      x += vx;
+      y += vy;
+      if (x < 0 || x > window.innerWidth - size) vx *= -1;
+      if (y < 0 || y > window.innerHeight - size) vy *= -1;
+      elon.style.left = x + 'px';
+      elon.style.top = y + 'px';
+
+      kholes.forEach((k, i) => {
+        const rect = k.getBoundingClientRect();
+        if (
+          x + size > rect.left &&
+          x < rect.right &&
+          y + size > rect.top &&
+          y < rect.bottom
+        ) {
+          const newX = Math.random() * (window.innerWidth - 110);
+          const newY = Math.random() * (window.innerHeight - 110);
+          k.style.left = newX + 'px';
+          k.style.top = newY + 'px';
+        }
+      });
+
+      requestAnimationFrame(move);
+    }
+
+    document.querySelectorAll('.section-title').forEach(title => {
+      title.addEventListener('click', () => {
+        const content = title.nextElementSibling;
+        content.classList.toggle('open');
+      });
+    });
+
+    spawnKholes();
+    move();
+
+    // Reflective stars
+    const canvas = document.querySelector('canvas.stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({length: 100}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5
+      }));
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff88';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', e => {
+      canvas.style.transform = `translate(${e.clientX / 40}px, ${e.clientY / 40}px)`;
+    });
+
+    resize();
+    drawStars();
+  </script>
+</body>
+</html>
